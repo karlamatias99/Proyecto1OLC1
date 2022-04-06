@@ -1,0 +1,76 @@
+package com.mycompany.Analizadores.JSON;
+import com.mycompany.Analizadores.Html.lexerJSON;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
+import com.mycompany.Objetos.*;
+
+parser code {:
+
+
+//Listas
+    private ArrayList<String> errorsList=new ArrayList<String>();
+    private ArrayList<ErrorFinded> reporteErrorList= new ArrayList<ErrorFinded>();
+public static ArrayList<String> ErroresSintacticos=new ArrayList<String>();
+
+public parserJSON(lexerJSON lexer) {
+        super(lexer);
+    }
+
+private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+
+:};
+
+
+
+// seccion de terminales En MAYUSCULAS
+
+terminal COMILLAS, VARIABLES, METODOS, COMENTARIO, CLASES, SCORE,
+NOMBRE, FUNCION, PARAMETROS, TEXTO, IGUAL, Op_MATEMATICO, MULTIPLICACION,
+PARENTESIS_A, PARENTESIS_C, LLAVE_A, LLAVE_C, CORCHETE_A, CORCHETE_C, COMA
+P_COMA, PUNTO, D_PUNTOS, IDENTIFICADOR, NUMERO;
+
+//seccion de no terminales en minusculas
+non terminal Inicio, Declaracion, EtHTML, tipoDato, declaracion,
+asignacion, Sentencia, dato, SentenciaFor, tablas, fila, columna, etiqueta, 
+valor, Operacion, Tipo_valor;
+non terminal  String  s;
+
+start with Inicio;
+
+//Reglas de producion, puede iniciar bien sea con una declaracion de vfariables, o con las etiquetas html 
+Inicio ::= Declaracion 
+| error s{:System.out.println("Error en expresion");:}
+;
+
+//declaracion de variables      
+Declaracion ::= LLAVE_A SCORE D_PUNTOS  NUMERO COMA 
+Sentencia
+;
+
+Sentencia ::= 
+CLASES D_PUNTOS CORCHETE_A  funcion CORCHETE_C COMA |
+VARIABLES D_PUNTOS CORCHETE_A funcion CORCHETE_C COMA |
+METODOS D_ PUNTOS CORCHETE_A funcion CORCHETE_C COMA |
+COMENTARIO D_PUNTOS CORHCETE_A funcion CORCHETE_C COMA
+;
+
+funcion ::= 
+LLAVE_A dato D_PUNTOS IDENTIFICADOR LLAVE_C COMA funcion |
+LLAVE_A dato D_PUNTOS IDENTIFICADOR LLAVE_C
+;
+
+dato ::=  
+NOMBRE |
+FUNCION |
+PARAMETROS |
+TEXTO
+;

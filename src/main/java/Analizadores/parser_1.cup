@@ -1,0 +1,456 @@
+package com.mycompany.Analizadores;
+import com.mycompany.Analizadores.lexerJava;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
+import com.mycompany.Objetos.*;
+
+parser code {:
+
+
+//Listas
+    private ArrayList<String> errorsList=new ArrayList<String>();
+    private ArrayList<Clases> clasesList= new ArrayList<Clases>();
+public static ArrayList<String> ErroresSintacticos=new ArrayList<String>();
+    private ArrayList<ErrorFinded> reporteErrorList= new ArrayList<ErrorFinded>();
+    private ArrayList<DeclaracionVariables> variablesList = new ArrayList<DeclaracionVariables>();
+    private ArrayList<Imports> importsList = new ArrayList<Imports>();
+    private ArrayList<Metodos> metodosList = new ArrayList<Metodos>();
+    private ArrayList<SentenciaDoWhile> DoWhileList = new ArrayList<SentenciaDoWhile>();
+    private ArrayList<SentenciaFor> ForList = new ArrayList<SentenciaFor>();
+    private ArrayList<SentenciaIf> IfList = new ArrayList<SentenciaIf>();
+    private ArrayList<SentenciaIfElse> IfElseList = new ArrayList<SentenciaIfElse>();
+    private ArrayList<SentenciaSwitch> SwitchList = new ArrayList<SentenciaSwitch>();
+    private ArrayList<SentenciaWhile> WhileList = new ArrayList<SentenciaWhile>();
+
+public parser(lexerJava lexer) {
+        super(lexer);
+    }
+
+public void syntax_error(Symbol s){
+        System.out.println("Error Sintáctico en la Línea " + (s.left) +
+        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+".");
+
+//Reporte sintactico
+    Integer linea = (Integer) s.left;
+    Integer columna = (Integer) s.right;
+    String componente = (String) s.value;
+   errorsList.add(String.format("Error Sintactico con el Token: '%s' este no pertenece a la estructura- En la linea: %d y columna: %d",s.value, s.left, s.right));
+      reporteErrorList.add(new ErrorFinded(componente, linea, columna,"Sintactico","Error sintactico, se esperaba "));
+System.out.println(reporteErrorList);
+    }
+
+ @Override
+    public List<Integer> expected_token_ids() {
+        return super.expected_token_ids();
+    }
+
+ //Retorna list de errores sintacticos
+        public ArrayList getReporteErrorsList(){
+	        return reporteErrorList;
+	    }
+        //Retorna list de errores sintacticos del reporte
+        public ArrayList getErrorsList(){
+	        return errorsList;
+	    }
+
+
+//Retorna list de variables
+        public ArrayList getFVariablesList(){ 
+	        return variablesList;
+	    }
+        //Ingresa datos en array de variables
+        public void addVariablesList(DeclaracionVariables variables){
+            try {
+                 variablesList.add(variables);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de clases
+        public ArrayList getClasesList(){ 
+	        return clasesList;
+	    }
+        //Ingresa datos en array de clases
+        public void addClasesList(Clases clases){
+            try {
+                 clasesList.add(clases);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  imports
+        public ArrayList getImportsList(){ 
+	        return importsList;
+	    }
+        //Ingresa datos en array de imports
+        public void addImportsList(Imports i){
+            try {
+                 importsList.add(i);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  metodos
+        public ArrayList getMetodosList(){ 
+	        return metodosList;
+	    }
+        //Ingresa datos en array de metodos
+        public void addMetodosList(Metodos m){
+            try {
+                 metodosList.add(m);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  doWhile
+        public ArrayList getDoWhileList(){ 
+	        return DoWhileList;
+	    }
+        //Ingresa datos en array de doWhile
+        public void addDoWhileList(SentenciaDoWhile dW){
+            try {
+                 DoWhileList.add(dW);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  for
+        public ArrayList getForList(){ 
+	        return ForList;
+	    }
+        //Ingresa datos en array de doWhile
+        public void addForList(SentenciaFor f){
+            try {
+                 ForList.add(f);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  if
+        public ArrayList getIfList(){ 
+	        return IfList;
+	    }
+        //Ingresa datos en array de if
+        public void addIfList(SentenciaIf If){
+            try {
+                 IfList.add(If);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  ifelse
+        public ArrayList getIfElseList(){ 
+	        return IfList;
+	    }
+        //Ingresa datos en array de if
+        public void addIfElseList(SentenciaIfElse IE){
+            try {
+                IfElseList.add(IE);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  switch
+        public ArrayList getSwitchList(){ 
+	        return SwitchList;
+	    }
+        //Ingresa datos en array de switch
+        public void addSwitchList(SentenciaSwitch s){
+            try {
+                SwitchList.add(s);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+//Retorna list de  while
+        public ArrayList getWhileList(){ 
+	        return WhileList;
+	    }
+        //Ingresa datos en array de while
+        public void addWhileList(SentenciaWhile w){
+            try {
+                WhileList.add(w);
+                }
+            catch(Exception e) {
+                System.out.println("error encontrado: "+e);
+                }
+	    }
+
+:};
+
+
+
+// seccion de terminales En MAYUSCULAS
+
+terminal COMILLAS, T_DATO, OBJETOS, CADENA, IF, ELSE, DO, WHILE, FOR, BOOLEAN, IMPORT, JAVA, UTIL, 
+PRIVATE, PUBLIC, PROTECTED, FINAL, SWITCH, CASE, CLASS, NUEVO, IGUAL, Op_MATEMATICO, SUMA, RESTA,
+ MULTIPLICACION, DIVISION, Op_LOGICO, Op_RELACIONAL, Op_ATRIBUCION, Op_INCREMENTO,
+ Op_BOOLEANO, Sn_SALIDA, PARENTESIS_A, PARENTESIS_C, LLAVE_A, LLAVE_C, CORCHETE_A, 
+CORCHETE_C, P_COMA, PUNTO, D_PUNTOS, IDENTIFICADOR, NUMERO, ERROR, Sn_THIS;
+
+//seccion de no terminales en minusculas
+
+non terminal Inicio, Sentencia, Declaracion, Declaracion_For, If, If_Else,
+While, Do_While, For, Sentencia_Booleana, Sentencia_For, Switch, Sentencia_Switch, Imports, clases,
+ claseInterna, metodos, Operacion, Tipo_valor, Datos;
+non terminal  String  s;
+
+start with Inicio;
+
+
+//Reglas de producion, puede iniciar bien sea con import o con clases sencillas 
+Inicio ::= Imports clases
+| clases
+|Imports
+| error s{:System.out.println("Error en expresion");:}
+|
+;
+
+//import de las clases y paquetes
+Imports ::= IMPORT:i JAVA:j PUNTO:punto UTIL:u PUNTO:punto2 MULTIPLICACION:m P_COMA:pc
+IMPORT:im JAVA:ja PUNTO:punto3 IDENTIFICADOR:id PUNTO:punto4 IDENTIFICADOR:id2 P_COMA:pc2
+{:Imports nuevoImport=new Imports(i.toString(),j.toString(),punto.toString(),u.toString(),punto2.toString(),m.toString(),pc.toString(),null);
+   addImportsList(nuevoImport);
+
+System.out.println("frase: " + nuevoImport);
+System.out.println("frase: " + im + ja + punto3 + id + punto4 + id2 + pc2 );
+:}
+
+|IMPORT:i JAVA:j PUNTO:punto UTIL:u PUNTO:punto2 MULTIPLICACION:m P_COMA:pc 
+{:Imports nuevoImport=new Imports(i.toString(),j.toString(),punto.toString(),u.toString(),punto2.toString(),m.toString(),pc.toString(),null);
+   addImportsList(nuevoImport);
+
+System.out.println("frase: " + nuevoImport);
+:}
+
+;
+
+//clases generales
+clases ::= 
+Tipo_valor:v CLASS:c IDENTIFICADOR:id LLAVE_A:llA Sentencia:sen LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), null, c.toString(), id.toString(), null,null,null, llA.toString(), sen.toString(), llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + v + v+ id + llA + sen + llC );
+System.out.println("frase: " + nuevaClases);
+:}
+
+|Tipo_valor:v CLASS:c IDENTIFICADOR:id LLAVE_A:llA LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), null, c.toString(), id.toString(), null,null,null, llA.toString(), null, llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + v + v+ id + llA + llC );
+System.out.println("frase: " + nuevaClases);
+:}
+
+;
+
+//Sentenccias, todo el codigo que pueda venir dentro de una clase o un metodo 
+Sentencia ::= 
+Sentencia Declaracion 
+|Declaracion 
+|Sentencia If 
+|If 
+|Sentencia If_Else 
+|If_Else 
+|Sentencia While 
+|While 
+|Sentencia Do_While 
+|Do_While 
+|Sentencia For 
+|For 
+|Sentencia Switch 
+|Switch 
+|metodos 
+;
+
+//para declarar clases internas, es decir una clase dentro de otra clase
+claseInterna ::=
+Tipo_valor:v CADENA:c IDENTIFICADOR:id PARENTESIS_A:parA Declaracion:de PARENTESIS_C:parC LLAVE_A:llA Sentencia:sen LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), null, c.toString(), id.toString(), parA.toString(), de.toString(), parC.toString(), llA.toString(), sen.toString(), llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+
+|Tipo_valor:v T_DATO:d IDENTIFICADOR:id PARENTESIS_A:parA PARENTESIS_C:parC LLAVE_A:llA Sentencia:sen LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), d.toString(), null, id.toString(), parA.toString(), null, parC.toString(), llA.toString(), sen.toString(), llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+|Tipo_valor:v T_DATO:d IDENTIFICADOR:id PARENTESIS_A:parA Declaracion:de PARENTESIS_C:parC LLAVE_A:llA Sentencia:sen LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), d.toString(), null, id.toString(), parA.toString(), de.toString(), parC.toString(), llA.toString(), sen.toString(), llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+
+|Tipo_valor:v T_DATO:d IDENTIFICADOR:id PARENTESIS_A:parA PARENTESIS_C:parC LLAVE_A:llA LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), d.toString(), null, id.toString(), parA.toString(), null, parC.toString(), llA.toString(), null, llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+
+|Tipo_valor:v T_DATO:d IDENTIFICADOR:id PARENTESIS_A:parA Declaracion:de PARENTESIS_C:parC LLAVE_A:llA LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), d.toString(), null, id.toString(), parA.toString(), de.toString(), parC.toString(), llA.toString(), null, llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+|Tipo_valor:v CADENA:s IDENTIFICADOR:id PARENTESIS_A:parA PARENTESIS_C:parC LLAVE_A:llA Sentencia:sen LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), s.toString(), null, id.toString(), parA.toString(), null, parC.toString(), llA.toString(), sen.toString(), llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+|Tipo_valor:v CADENA:s IDENTIFICADOR:id PARENTESIS_A:parA PARENTESIS_C:parC LLAVE_A:llA LLAVE_C:llC 
+{:Clases nuevaClases=new Clases(v.toString(), s.toString(), null, id.toString(), parA.toString(), null, parC.toString(), llA.toString(), null, llC.toString());
+   addClasesList(nuevaClases);
+System.out.println("frase: " + nuevaClases);
+:}
+
+;
+
+//declaracion de variables u objetos 
+Declaracion ::=
+Tipo_valor T_DATO Datos P_COMA |
+Tipo_valor T_DATO IDENTIFICADOR IGUAL Datos P_COMA |
+Tipo_valor T_DATO IGUAL Datos P_COMA |
+Tipo_valor CADENA IDENTIFICADOR P_COMA |
+Tipo_valor CADENA IDENTIFICADOR IGUAL COMILLAS COMILLAS P_COMA |
+Tipo_valor CADENA IDENTIFICADOR IGUAL COMILLAS IDENTIFICADOR COMILLAS P_COMA |
+CADENA IDENTIFICADOR P_COMA |
+CADENA IDENTIFICADOR |
+T_DATO Datos P_COMA |
+OBJETOS IDENTIFICADOR P_COMA|
+OBJETOS IDENTIFICADOR IGUAL NUEVO OBJETOS PARENTESIS_A PARENTESIS_C P_COMA |
+Sn_SALIDA IDENTIFICADOR P_COMA |
+Sn_SALIDA |
+claseInterna |
+Sn_THIS PUNTO IDENTIFICADOR IGUAL IDENTIFICADOR P_COMA 
+;
+
+//declarar una sentencia if 
+If ::= IF PARENTESIS_A Sentencia_Booleana PARENTESIS_C LLAVE_A Sentencia LLAVE_C
+;
+
+//declarar sentencia de tipo booleana, lo que pueda venir dentro de un metodo if, if else, while, etc
+Sentencia_Booleana ::= 
+Op_BOOLEANO |
+IDENTIFICADOR Op_RELACIONAL Op_BOOLEANO |
+IDENTIFICADOR Op_RELACIONAL NUMERO |
+IDENTIFICADOR Op_RELACIONAL IDENTIFICADOR |
+IDENTIFICADOR Op_RELACIONAL COMILLAS COMILLAS |
+IDENTIFICADOR Op_RELACIONAL COMILLAS IDENTIFICADOR COMILLAS
+;
+
+//declarar sentenccia if else
+If_Else ::= IF:i PARENTESIS_A:pA Sentencia_Booleana:sen PARENTESIS_C:pC LLAVE_A:llA Sentencia:s LLAVE_C:llC ELSE:el LLAVE_A:llA2 Sentencia:se LLAVE_C:llC2
+{:SentenciaIfElse nuevoIfElse = new SentenciaIfElse(i.toString(),pA.toString(), sen.toString(), pC.toString(), llA.toString(), s.toString(), llC.toString(), el.toString(),llA2.toString(), se.toString(), llC2.toString());
+   addIfElseList(nuevoIfElse);
+System.out.println("frase: " + nuevoIfElse);
+:}
+;
+
+//declarar sentencia while
+While ::= WHILE:w PARENTESIS_A:pA Sentencia_Booleana:sen PARENTESIS_C:pC LLAVE_A:llA Sentencia:se LLAVE_C:llC
+{:SentenciaWhile nuevoWhile = new SentenciaWhile(w.toString(),pA.toString(), sen.toString(), pC.toString(), llA.toString(), se.toString(), llC.toString());
+   addWhileList(nuevoWhile);
+System.out.println("frase: " + nuevoWhile);
+:}
+;
+
+//declarar una sentencia do while
+Do_While ::= DO:d LLAVE_A:llA Sentencia:sen LLAVE_C:llC WHILE:w PARENTESIS_A:pA Sentencia_Booleana:s PARENTESIS_C:pC P_COMA:puntoC
+{:SentenciaDoWhile nuevoDoWhile = new SentenciaDoWhile(d.toString(),llA.toString(), sen.toString(), llC.toString(), w.toString(), pA.toString(), s.toString(), pC.toString(), puntoC.toString());
+   addDoWhileList(nuevoDoWhile);
+System.out.println("frase: " + nuevoDoWhile);
+:}
+
+;
+
+//declarar una sentencia for 
+For ::= FOR:f PARENTESIS_A:pA Sentencia_For:sen PARENTESIS_C:pC LLAVE_A:llA Sentencia:s LLAVE_C:llC
+{:SentenciaFor nuevoFor = new SentenciaFor(f.toString(),pA.toString(), sen.toString(), pC.toString(), llA.toString(), s.toString(), llC.toString());
+   addForList(nuevoFor);
+System.out.println("frase: " + nuevoFor);
+:}
+;
+
+//lo que puede venir dentro de un for 
+Sentencia_For ::= 
+T_DATO IDENTIFICADOR IGUAL NUMERO P_COMA Sentencia_Booleana P_COMA Declaracion_For |
+IDENTIFICADOR IGUAL NUMERO P_COMA Sentencia_Booleana P_COMA Declaracion_For
+;
+
+Declaracion_For ::=
+IDENTIFICADOR Op_ATRIBUCION NUMERO |
+IDENTIFICADOR Op_INCREMENTO |
+Op_INCREMENTO IDENTIFICADOR
+;
+
+//declarar una sentencia switch
+Switch ::=
+SWITCH:s PARENTESIS_A:pA IDENTIFICADOR:id PARENTESIS_C:pC LLAVE_A:llA Sentencia_Switch:sen LLAVE_C:llC
+{:SentenciaSwitch nuevoSwitch = new SentenciaSwitch(s.toString(),pA.toString(), id.toString(), pC.toString(), llA.toString(), sen.toString(), llC.toString());
+   addSwitchList(nuevoSwitch);
+System.out.println("frase: " + nuevoSwitch);
+:}
+
+; 
+
+//lo que vienen dentro de una sentencia switch
+Sentencia_Switch ::= 
+CASE IDENTIFICADOR D_PUNTOS Sn_SALIDA | 
+CASE IDENTIFICADOR D_PUNTOS Sn_SALIDA Sentencia_Switch
+;
+
+//declarar metodos 
+metodos ::= 
+IDENTIFICADOR PARENTESIS_A PARENTESIS_C P_COMA |
+IDENTIFICADOR PARENTESIS_A Operacion PARENTESIS_C P_COMA
+;
+
+//Operaciones matematicas
+Operacion ::= 
+COMILLAS IDENTIFICADOR COMILLAS Op_MATEMATICO Operacion |
+COMILLAS IDENTIFICADOR COMILLAS MULTIPLICACION Operacion |
+NUMERO |
+PARENTESIS_A Operacion PARENTESIS_C
+
+;
+
+
+//tipo de valor que pueden tomar las clases, metodos o variables 
+Tipo_valor ::=
+PRIVATE |
+PUBLIC |
+PROTECTED |
+FINAL
+;
+
+Datos ::=
+NUMERO |
+IDENTIFICADOR |
+Op_BOOLEANO 
+|
+;

@@ -1,0 +1,125 @@
+package com.mycompany.Analizadores.Html;
+import com.mycompany.Analizadores.Html.lexerHTML;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
+import com.mycompany.Objetos.*;
+
+parser code {:
+
+
+//Listas
+    private ArrayList<String> errorsList=new ArrayList<String>();
+    private ArrayList<ErrorFinded> reporteErrorList= new ArrayList<ErrorFinded>();
+public static ArrayList<String> ErroresSintacticos=new ArrayList<String>();
+
+public parserHTML(lexerHTML lexer) {
+        super(lexer);
+    }
+
+private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+
+:};
+
+
+// seccion de terminales En MAYUSCULAS
+
+terminal COMILLAS, T_DATO, CADENA, MENORQ, MAYORQ, INHTML, FINHTML, ETIQUETA1, FINETIQUETA,
+INTABLA, FINTABLA, FOR, ITERADOR, HASTA, FINFOR, INIFILCOLUM, FINFILCOLUM, INCOLUMT,
+FINCOLUMT, INCOLUMD, FINCOLUMD,  SALTOLINEA, DOBLEDOLAR, RESULTADO, SCORE, IGUAL, 
+Op_MATEMATICO, PARENTESIS_A, PARENTESIS_C, LLAVE_A, LLAVE_C, CORCHETE_A, 
+CORCHETE_C, P_COMA, COMA, PUNTO, D_PUNTOS, IDENTIFICADOR, NUMERO, ERROR;
+
+//seccion de no terminales en minusculas
+
+non terminal Inicio, Declaracion, EtHTML, tipoDato, declaracion,
+asignacion, Sentencia, dato, SentenciaFor, tablas, fila, columna, etiqueta, 
+valor, Operacion, Tipo_valor;
+non terminal  String  s;
+
+start with Inicio;
+
+//Reglas de producion, puede iniciar bien sea con una declaracion de vfariables, o con las etiquetas html 
+Inicio ::= Declaracion EtHTML
+|EtHTML
+|Declaracion
+| error s{:System.out.println("Error en expresion");:}
+|
+;
+
+//declaracion de variables      
+Declaracion ::= tipoDato declaracion
+|Declaracion asignacion
+|asignacion 
+;
+tipoDato ::= T_DATO 
+|CADENA 
+;
+declaracion ::= IDENTIFICADOR COMA declaracion
+|IDENTIFICADOR P_COMA
+;
+asignacion ::= IDENTIFICADOR IGUAL dato P_COMA
+|IDENTIFICADOR P_COMA
+|tipoDato IDENTIFICADOR IGUAL IDENTIFICADOR Op_MATEMATICO RESULTADO PUNTO SCORE 
+;
+dato ::= NUMERO
+|IDENTIFICADOR 
+
+;
+
+EtHTML ::= 
+INHTML Sentencia FINHTML
+|INHTML FINHTML
+;
+
+Sentencia ::= 
+Sentencia etiqueta
+|etiqueta
+|Sentencia tablas
+|tablas
+
+;
+
+etiqueta ::= 
+ETIQUETA1 valor FINETIQUETA
+;
+
+tablas ::= INTABLA fila SentenciaFor FINTABLA
+|INTABLA fila FINTABLA
+|INTABLA FINTABLA
+|INTABLA SentenciaFor FINTABLA
+;
+
+fila ::= INIFILCOLUM columna FINFILCOLUM fila
+|INIFILCOLUM columna FINFILCOLUM
+|SALTOLINEA
+;
+
+columna ::= 
+INCOLUMT valor FINCOLUMT
+| INCOLUMT valor FINCOLUMT columna 
+| INCOLUMD valor FINCOLUMD
+| INCOLUMD valor FINCOLUMD columna 
+| SALTOLINEA
+;
+
+
+
+valor ::= 
+DOBLEDOLAR PARENTESIS_A RESULTADO PUNTO IDENTIFICADOR CORCHETE_A IDENTIFICADOR CORCHETE_C PUNTO IDENTIFICADOR PARENTESIS_C DOBLEDOLAR
+| DOBLEDOLAR PARENTESIS_A IDENTIFICADOR PARENTESIS_C DOBLEDOLAR 
+|IDENTIFICADOR 
+;
+
+SentenciaFor ::= 
+FOR ITERADOR D_PUNTOS IDENTIFICADOR HASTA D_PUNTOS IDENTIFICADOR P_COMA MAYORQ FINFOR
+|FOR ITERADOR D_PUNTOS IDENTIFICADOR HASTA D_PUNTOS IDENTIFICADOR P_COMA MAYORQ fila FINFOR 
+;

@@ -1,0 +1,175 @@
+package com.mycompany.Analizadores.Html;
+import com.mycompany.Analizadores.Html.lexerHTML;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
+import com.mycompany.Objetos.*;
+
+parser code {:
+
+
+//Listas
+    private ArrayList<String> errorsList=new ArrayList<String>();
+    private ArrayList<ErrorFinded> reporteErrorList= new ArrayList<ErrorFinded>();
+
+
+public parserHTML(lexerHTML lexer) {
+        super(lexer);
+    }
+
+    private int count = 0;
+
+    private void increaseCount() {
+        count++;
+    }
+    
+    public int getCount() {
+        return count;
+    }
+
+public void report_error(String message, Object info) {
+        System.out.println("public void report_error");
+    }
+    
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("public void report_fatal_error");
+    }
+
+   /* public void syntax_error(Symbol cur_token) {
+        System.out.println("El error es el simbolo: " + sym.terminalNames[cur_token.sym]);
+        System.out.println(String.format("En la posicion: %d, %d", cur_token.left, cur_token.right));
+    }*/
+
+    public void unrecovered_syntax_error(Symbol cur_token) {
+        if (cur_token.sym == sym.EOF) {
+            System.out.println("public void unrecoveredsyntax_error");
+        }
+    }
+
+public void syntax_error(Symbol s){
+        System.out.println("Error Sintáctico en la Línea " + (s.left) +
+        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+".");
+
+//Reporte sintactico
+    List<Integer> lista=expected_token_ids();
+    Integer linea = (Integer) s.left;
+    Integer columna = (Integer) s.right;
+    String componente = (String) s.value;
+    report_error("Error Sintáctico en la Línea " + linea +
+            " Columna "+columna+ ". No se esperaba este componente: " +componente+"." + "\n",null);
+    //Imprime el error
+    errorsList.add(String.format("Error Sintactico con el Token: '%s' este no pertenece a la estructura- linea: %d  columna: %d", componente, linea, columna+"\n"));
+    reporteErrorList.add(new ErrorFinded(componente, linea, columna,"Sintactico","Error sintactico, se esperaba "));
+
+    }
+
+ @Override
+    public List<Integer> expected_token_ids() {
+        return super.expected_token_ids();
+    }
+
+ //Retorna list de errores sintacticos
+        public ArrayList getReporteErrorsList(){
+	        return reporteErrorList;
+	    }
+        //Retorna list de errores sintacticos del reporte
+        public ArrayList getErrorsList(){
+	        return errorsList;
+	    }
+
+:};
+
+
+// seccion de terminales En MAYUSCULAS
+
+terminal COMILLAS, T_DATO, CADENA, MENORQ, MAYORQ, INHTML, FINHTML, ETIQUETA1, FINETIQUETA,
+INTABLA, FINTABLA, FOR, ITERADOR, HASTA, FINFOR, INIFILCOLUM, FINFILCOLUM, INCOLUMT,
+FINCOLUMT, INCOLUMD, FINCOLUMD,  SALTOLINEA, DOBLEDOLAR, RESULTADO, SCORE, IGUAL, 
+Op_MATEMATICO, PARENTESIS_A, PARENTESIS_C, LLAVE_A, LLAVE_C, CORCHETE_A, 
+CORCHETE_C, P_COMA, COMA, PUNTO, D_PUNTOS, IDENTIFICADOR, NUMERO, ERROR;
+
+//seccion de no terminales en minusculas
+
+non terminal Inicio, Declaracion, EtHTML, tipoDato, declaracion,
+asignacion, Sentencia, dato, SentenciaFor, tablas, fila, columna, etiqueta, 
+valor, Operacion, Tipo_valor;
+non terminal  String  s;
+
+start with Inicio;
+
+//Reglas de producion, puede iniciar bien sea con una declaracion de vfariables, o con las etiquetas html 
+Inicio ::= Declaracion EtHTML
+|EtHTML
+|Declaracion
+| error s{:System.out.println("Error en expresion");:}
+|
+;
+
+//declaracion de variables      
+Declaracion ::= tipoDato declaracion
+|Declaracion asignacion
+|asignacion 
+;
+tipoDato ::= T_DATO 
+|CADENA 
+;
+declaracion ::= IDENTIFICADOR COMA declaracion
+|IDENTIFICADOR P_COMA
+;
+asignacion ::= IDENTIFICADOR IGUAL dato P_COMA
+|IDENTIFICADOR P_COMA
+|tipoDato IDENTIFICADOR IGUAL IDENTIFICADOR Op_MATEMATICO RESULTADO PUNTO SCORE 
+;
+dato ::= NUMERO
+|IDENTIFICADOR 
+
+;
+
+EtHTML ::= 
+INHTML Sentencia FINHTML
+|INHTML FINHTML
+;
+
+Sentencia ::= 
+Sentencia etiqueta
+|etiqueta
+|Sentencia tablas
+|tablas
+
+;
+
+etiqueta ::= 
+ETIQUETA1 valor FINETIQUETA
+;
+
+tablas ::= INTABLA fila SentenciaFor FINTABLA
+|INTABLA fila FINTABLA
+|INTABLA FINTABLA
+|INTABLA SentenciaFor FINTABLA
+;
+
+fila ::= INIFILCOLUM columna FINFILCOLUM fila
+|INIFILCOLUM columna FINFILCOLUM
+|SALTOLINEA
+;
+
+columna ::= 
+INCOLUMT valor FINCOLUMT
+| INCOLUMT valor FINCOLUMT columna 
+| INCOLUMD valor FINCOLUMD
+| INCOLUMD valor FINCOLUMD columna 
+| SALTOLINEA
+;
+
+
+
+valor ::= 
+DOBLEDOLAR PARENTESIS_A RESULTADO PUNTO IDENTIFICADOR CORCHETE_A IDENTIFICADOR CORCHETE_C PUNTO IDENTIFICADOR PARENTESIS_C DOBLEDOLAR
+| DOBLEDOLAR PARENTESIS_A IDENTIFICADOR PARENTESIS_C DOBLEDOLAR 
+|IDENTIFICADOR 
+;
+
+SentenciaFor ::= 
+FOR ITERADOR D_PUNTOS IDENTIFICADOR HASTA D_PUNTOS IDENTIFICADOR P_COMA MAYORQ FINFOR
+|FOR ITERADOR D_PUNTOS IDENTIFICADOR HASTA D_PUNTOS IDENTIFICADOR P_COMA MAYORQ fila FINFOR 
+;
